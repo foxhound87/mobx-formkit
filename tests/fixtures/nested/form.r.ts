@@ -27,7 +27,7 @@ const rules = {
   "club.city": "required|string",
   "members[].firstname": "required|string",
   "members[].lastname": "required|string",
-  "members[].hobbies": "required|string",
+  "members[].hobbies": "required|array",
   "members[].hobbies[]": "required|string",
 };
 
