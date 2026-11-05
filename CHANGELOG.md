@@ -11,6 +11,12 @@
 
 - fix: emit form:new event to devtools hook on form construction (6e328f9)
 
+## 1.1.2 (2026-11-05)
+
+### Fixes
+
+- fix: include array containers in form isValid/hasError aggregation ([4a820c5](https://github.com/foxhound87/mobx-formkit/commit/4a820c52c7d9ff2fc11327c6ec717bb90442ee33)) (#656)
+
 # 1.0.0
 
 Renamed from mobx-react-form (last published 7.1.0). Package name and UMD globals changed; APIs identical.
