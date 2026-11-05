@@ -455,7 +455,12 @@ export default abstract class Base<
     return transform(
       $fields,
       (check: any, field: any) => {
-        if (!field.fields.size || !Array.isArray(field.initial)) {
+        if (
+          !field.fields.size ||
+          !Array.isArray(field.initial) ||
+          prop === FieldPropsEnum.isValid ||
+          prop === FieldPropsEnum.hasError
+        ) {
           check.push(field[prop]);
         }
 
