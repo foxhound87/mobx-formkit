@@ -100,7 +100,7 @@ Form(setup: FieldsDefinitions, config: FormConfig)
 ```
 
 | Config key | Type                                                | Purpose                         |
-| ---------- | --------------------------------------------------- | ------------------------------- | --------------------------- |
+| ---------- | --------------------------------------------------- | ------------------------------- |
 | `plugins`  | `{ dvr?, vjf?, ajv?, yup?, zod?, joi?, valibot?, vinejs? }` | Validation drivers              |
 | `hooks`    | `{ onInit?, onChange?, onSuccess?, onError?, ... }` | Lifecycle callbacks             |
 | `handlers` | `{ onSubmit?, onKeyDown?, ... }`                    | Custom event handlers (curried) |
