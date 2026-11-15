@@ -33,6 +33,23 @@ Pass the field values directly — no `value` wrapper needed:
 form.$('members').add({ firstname: 'John', lastname: 'Doe' });
 ```
 
+The keys of the object are matched against the sub-fields declared in the struct, so the new entry gets an auto-incremented key and the given values:
+
+```javascript
+// struct: ['items[].name', 'items[].qty']
+form.$('items').add({ name: 'New', qty: 1 });
+// → { items: [ ..., { name: 'New', qty: 1 } ] }
+```
+
+::: tip `name` and `key` are reserved
+`name` is ambiguous: it is treated as a **value** only when the container declares a sub-field called `name` (like `items[].name` above), otherwise it is used as the **key** of the new field. Use `key` to set the key explicitly:
+
+```javascript
+form.$('items').add({ key: 'custom', name: 'New' });
+// → the entry is stored under the 'custom' key, with name = 'New'
+```
+:::
+
 ### Add multiple entries at once
 
 Pass an array of objects:
@@ -74,6 +91,8 @@ form.$('member.hobbies').del(3); // same as above
 
 > `del()` is a programmatic action that does **not** trigger Event Handlers. Use `onDel(e)` if you need hook execution.
 
+With the `softDelete` option enabled the field is only flagged as deleted (`deleted === true`): the field and the form are flagged as dirty (`isDirty`), so the deletion is tracked by the form state.
+
 ---
 
 ## move()
@@ -94,6 +113,7 @@ form.$('hobbies').move(fromIndex, toIndex);
 - No-op if `fromIndex === toIndex` or either index is out of bounds
 - All field references, values, and validation state are preserved
 - The change is fully tracked by MobX — observers re-render automatically
+- The field and the form are flagged as changed (`isDirty` / `isPristine`)
 
 Internally, `move()` delegates to [ArrayMap](../advanced/array-map.md).
 
