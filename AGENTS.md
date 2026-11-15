@@ -357,7 +357,7 @@ const fields = {
 };
 ```
 
-**Mixed mode** — unified overrides separated. Any combination works.
+**Mixed mode** — separated props are the source of truth for the props they define; the unified definition provides the structure and the props not defined in separated mode. Any combination works.
 
 ### 4.11 Field Converters
 
