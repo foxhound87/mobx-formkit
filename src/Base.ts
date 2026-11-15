@@ -1057,10 +1057,10 @@ export default abstract class Base<
     Checks if the given path refers to an array container
     (a struct entry like `path[]` or `path[].subfield`)
   */
-  isArrayContainer(path: string): boolean {
+  isArrayContainer(path?: string): boolean {
     const struct = this.state.struct();
     if (!Array.isArray(struct)) return false;
-    const structPath = (path ?? "").replace(/\.\d+\./g, "[].");
+    const structPath = (path ?? this.path ?? "").replace(/\.\d+\./g, "[].");
     return struct.some(
       (s: any) => typeof s === "string" && s.startsWith(`${structPath}[]`),
     );

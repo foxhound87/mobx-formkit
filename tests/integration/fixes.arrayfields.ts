@@ -283,6 +283,36 @@ describe("Array fields — update / reset / sync / add", () => {
     });
   });
 
+  describe("array field helpers", () => {
+    it("tells apart the array containers from the plain array fields", () => {
+      const form = new Form({
+        struct: ["items[].name", "tags"],
+        values: { tags: ["a"] },
+      });
+
+      expect(form.$("items").isArrayContainer()).to.equal(true);
+      expect(form.$("items").isPlainArrayField()).to.equal(false);
+
+      expect(form.$("tags").isArrayContainer()).to.equal(false);
+      expect(form.$("tags").isPlainArrayField()).to.equal(true);
+    });
+
+    it("checks any path from the form", () => {
+      const form = new Form({ struct: ["items[].name", "tags"] });
+
+      expect(form.isArrayContainer("items")).to.equal(true);
+      expect(form.isArrayContainer("items[].name")).to.equal(false);
+      expect(form.isArrayContainer("tags")).to.equal(false);
+      expect(form.isArrayContainer()).to.equal(false);
+    });
+
+    it("is not a plain array field when the value is not an array", () => {
+      const form = new Form({ struct: ["name"] });
+
+      expect(form.$("name").isPlainArrayField()).to.equal(false);
+    });
+  });
+
   describe("regressions", () => {
     it("still creates the nested fields of an array container on update()", () => {
       const form = new Form({
