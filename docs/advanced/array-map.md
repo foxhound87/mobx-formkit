@@ -154,6 +154,34 @@ However, `add()` and `del()` are the **preferred API** because they also:
 
 ---
 
+## Array containers vs plain array fields
+
+Two kinds of array fields behave differently, and the library tells them apart with two helpers available on every **Form** and **Field** instance:
+
+| Helper | Description |
+|--------|-------------|
+| `isArrayContainer(path?)` | The path is declared as an array in the struct (`path[]` or `path[].subfield`) |
+| `isPlainArrayField()` | The field has no nested fields and its value is an array |
+
+```javascript
+const form = new Form({ struct: ['items[].name', 'tags'] });
+
+form.$('items').isArrayContainer();   // true
+form.$('tags').isArrayContainer();    // false
+form.$('tags').isPlainArrayField();   // true (when the value is an array)
+```
+
+| | Array container (`items[]`) | Plain array field (`tags`) |
+|---|---|---|
+| Value | read from the nested fields | the array itself |
+| `update({ tags: [...] })` | creates / updates / removes the nested fields | sets the value (an empty array empties the field) |
+| `add({ value: 'x' })` | adds a nested item | appends the item to the array |
+| `sync([...])` | applies the array to the nested fields | sets the value |
+| `reset()` | rebuilds the nested fields from the declared array | restores the declared value |
+| `clear()` | removes the nested fields (value becomes `[]`) | empties the value |
+
+---
+
 ## Key Takeaways
 
 1. **Ordered Map**: ArrayMap combines Map semantics with array ordering — best of both worlds.
@@ -161,3 +189,4 @@ However, `add()` and `del()` are the **preferred API** because they also:
 3. **`toArray()`**: Expose the underlying array for direct MobX observation (e.g., `observe()` from mobx).
 4. **Full Map API**: `get`, `set`, `has`, `delete`, `forEach`, `keys`, `values`, `entries`.
 5. **Prefer `add()`/`del()`**: For form fields, use the higher-level methods to ensure proper field initialization.
+6. **Array containers vs plain arrays**: `isArrayContainer()` and `isPlainArrayField()` tell apart the two kinds of array fields, which behave differently on `update()`, `add()`, `sync()`, `reset()` and `clear()`.

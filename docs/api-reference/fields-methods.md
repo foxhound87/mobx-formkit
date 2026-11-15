@@ -206,6 +206,34 @@ form.$('address').values();
 
 ---
 
+## Array Fields
+
+Helpers to tell apart the two kinds of array fields, available on **Form** and **Field** instances.
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `isArrayContainer(path)` | `(path?: string) => boolean` | boolean | Check if a path is an array container (a struct entry like `path[]` or `path[].subfield`) |
+| `isPlainArrayField()` | `() => boolean` | boolean | Check if the field is a plain field holding an array value (no nested fields) |
+
+```javascript
+const form = new Form({ struct: ['items[].name', 'tags'] });
+
+form.$('items').isArrayContainer();     // true — items holds an array of items
+form.$('items').isPlainArrayField();    // false — it has nested fields
+
+form.$('tags').isArrayContainer();      // false — tags is not declared as an array
+form.$('tags').isPlainArrayField();     // true — when its value is an array
+```
+
+They drive the array behaviour of the actions:
+
+- `isArrayContainer()` → the field is a **container**: its value is read from the nested fields, `update()` and `sync()` with an array create/update/remove the nested fields, `reset()` rebuilds them from the declared array and `clear()` removes them.
+- `isPlainArrayField()` → the field holds the array **as its value**: `update()` with an array sets the value (an empty array empties the field), `add()` appends the new item and `clear()` empties it.
+
+> `isArrayContainer(path)` checks the **struct** of the form, so it can be used with any path (also from the form root): `form.isArrayContainer('items')`.
+
+---
+
 ## Iteration
 
 | Method | Signature | Returns | Description |
