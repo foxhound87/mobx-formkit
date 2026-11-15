@@ -30,6 +30,7 @@ import {
   isArrayOfObjects,
   getObservableMapValues,
   maxKey,
+  cloneValues,
   $try,
   isEvent,
   hasIntKeys,
@@ -80,6 +81,12 @@ export default abstract class Base<
   $hooks: any = {};
   $handlers: any = {};
 
+  /**
+    Values captured by the last `commit()`.
+    Not observable: it is a snapshot, not a UI state.
+  */
+  $committed: any = undefined;
+
   constructor() {
     makeObservable(this, {
       $submitted: observable,
@@ -111,6 +118,8 @@ export default abstract class Base<
       add: action,
       del: action,
       move: action,
+      commit: action,
+      restore: action,
     });
 
     // Any reorder of the fields (also when `fields.move()` is called
@@ -1123,6 +1132,67 @@ export default abstract class Base<
         );
       }
     });
+  }
+
+  /**
+    Commit & Restore
+   */
+
+  /**
+    Captures the current values as the new restore reference.
+
+    It does not validate, it does not send anything and it does not change
+    the current values.
+   */
+  commit(): void {
+    this.$committed = cloneValues(this.values());
+  }
+
+  /**
+    Restores the values captured by the last `commit()`.
+
+    Before the first commit the reference is the reset target of the fields
+    (the `default` when it differs from the `initial`, the `initial`
+    otherwise), so `restore()` is useful even without a commit.
+   */
+  restore(): void | Promise<any> {
+    if (this.$committed === void 0) return;
+    this.update(cloneValues(this.$committed));
+    if (this.state.options.get(OptionsEnum.validateOnRestore, this)) {
+      return this.validate({
+        showErrors: this.state.options.get(
+          OptionsEnum.showErrorsOnRestore,
+          this,
+        ),
+      });
+    }
+  }
+
+  /**
+    The values captured by the last `commit()` (read only)
+   */
+  committed(): any {
+    return this.$committed === void 0 ? void 0 : cloneValues(this.$committed);
+  }
+
+  /**
+    Initializes the restore reference with the reset target of the fields
+    (the `default` when it differs from the `initial`, the `initial`
+    otherwise)
+   */
+  initCommittedSnapshot(): void {
+    this.$committed = cloneValues(this.resetTargetValues());
+  }
+
+  /**
+    The values the fields would have after a `reset()`
+   */
+  resetTargetValues(): any {
+    const $values: any = {};
+    getObservableMapValues(this.fields).forEach((field: any) => {
+      $values[field.key] = field.resetTargetValue();
+    });
+    return $values;
   }
 
   /**

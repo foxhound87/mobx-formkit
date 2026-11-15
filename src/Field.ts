@@ -301,6 +301,9 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     // this.checkValidationPlugins();
     this.initNestedFields(data, update);
 
+    // the restore reference starts from the reset target of the fields
+    this.initCommittedSnapshot();
+
     this.incremental = this.hasIncrementalKeys;
 
     this.debouncedValidation = debounce(
@@ -506,6 +509,22 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     const value = this.changed ? this.value : this.initial;
     // a soft deleted field differs from its initial state
     return !isEqual(this.initial, value) || this.deleted;
+  }
+
+  /**
+    The value the field would have after a `reset()`: the `default` when it
+    differs from the `initial`, the `initial` otherwise. For a field with
+    nested fields it is the tree of the nested values.
+   */
+  resetTargetValue(): any {
+    if (this.hasNestedFields) {
+      const $nested: any = {};
+      getObservableMapValues(this.fields).forEach((field: any) => {
+        $nested[field.key] = field.resetTargetValue();
+      });
+      return this.hasIncrementalKeys ? Object.values($nested) : $nested;
+    }
+    return this.$default !== this.$initial ? this.$default : this.$initial;
   }
 
   get isPristine(): boolean {

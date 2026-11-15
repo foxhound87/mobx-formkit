@@ -311,8 +311,8 @@ const bindings = {
 
 | Group                   | Key Options                                                                                                                                                                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Validation triggers** | `validateOnInit` (true), `validateOnBlur` (true), `validateOnChange` (false), `validateOnSubmit` (true), `validateOnClear` (false), `validateOnReset` (false)                                                                  |
-| **Error display**       | `showErrorsOnInit` (false), `showErrorsOnBlur` (true), `showErrorsOnChange` (true), `showErrorsOnSubmit` (true), `showErrorsOnClear` (false), `showErrorsOnReset` (true)                                                       |
+| **Validation triggers** | `validateOnInit` (true), `validateOnBlur` (true), `validateOnChange` (false), `validateOnSubmit` (true), `validateOnClear` (false), `validateOnReset` (false), `validateOnRestore` (false)                     |
+| **Error display**       | `showErrorsOnInit` (false), `showErrorsOnBlur` (true), `showErrorsOnChange` (true), `showErrorsOnSubmit` (true), `showErrorsOnClear` (false), `showErrorsOnReset` (true), `showErrorsOnRestore` (false)      |
 | **Debounce**            | `validationDebounceWait` (250ms), `validationDebounceOptions` `{ leading: false, trailing: true }`                                                                                                                             |
 | **Strict modes**        | `strictSelect` (true), `strictDelete` (true), `strictSet` (false), `strictUpdate` (false)                                                                                                                                      |
 | **Converters**          | `applyInputConverterOnInit` (true), `applyInputConverterOnSet` (true), `applyInputConverterOnUpdate` (true)                                                                                                                    |
@@ -465,7 +465,23 @@ form.$("email").clear(); // single field
 form.$("email").reset();
 ```
 
-### 5.6 State Checks
+### 5.6 Commit / Restore
+
+`commit()` captures the current values as the restore reference, `restore()` brings them back. Available on **Form** and on the nested fields (sub-forms).
+
+```javascript
+form.commit(); // the current values become the restore reference
+form.restore(); // restores the values captured by the last commit
+form.committed(); // the captured values (read only)
+```
+
+- before the first `commit()` the reference is the **reset target** of the form (the `default` when it differs from the `initial`, the `initial` otherwise)
+- `restore()` restores the **values only**: the fields added after the commit are kept, the deleted ones are not recreated, the array containers follow the snapshot (content and order)
+- `isDirty`/`isPristine` keep comparing with `initial`/`default`; the not committed delta is `form.values()` vs `form.committed()`
+- the validation is not triggered by default: enable the `validateOnRestore` option to validate the restored values
+- `reset()` is unchanged, it keeps restoring the `initial`/`default`
+
+### 5.7 State Checks
 
 ```javascript
 form.isValid; // all fields valid (every)
@@ -484,7 +500,7 @@ form.submitting; // submission in progress (boolean)
 form.size; // number of top-level fields
 ```
 
-### 5.7 Event Wiring
+### 5.8 Event Wiring
 
 ```javascript
 // In JSX — built-in handlers
@@ -499,7 +515,7 @@ form.size; // number of top-level fields
 // onFocus, autoFocus, inputMode, onKeyUp, onKeyDown
 ```
 
-### 5.8 TypeScript
+### 5.9 TypeScript
 
 ```typescript
 import { Form, Field } from 'mobx-formkit';
@@ -522,7 +538,7 @@ const fields: Record<string, FieldDefinition> = [
 ];
 ```
 
-### 5.9 Composer (Multi-Form)
+### 5.10 Composer (Multi-Form)
 
 ```javascript
 import { composer } from "mobx-formkit/lib/composer";
@@ -537,7 +553,7 @@ wizard.get("value"); // { step1: {...}, step2: {...} }
 wizard.select("step1"); // individual form
 ```
 
-### 5.10 Observers & Interceptors
+### 5.11 Observers & Interceptors
 
 MobX `observe`/`intercept` on any field prop:
 
