@@ -110,6 +110,7 @@ export default abstract class Base<
       set: action,
       add: action,
       del: action,
+      move: action,
     });
   }
 
@@ -455,11 +456,24 @@ export default abstract class Base<
     return transform(
       $fields,
       (check: any, field: any) => {
+        // Array containers are skipped because most of their props are
+        // computed recursively on their nested fields. Some props are not
+        // recursive (isDirty/isPristine compare the container value with
+        // its initial value) or must aggregate the container itself
+        // (isValid/hasError), so they are taken into account for array
+        // containers too. (#656, #657)
+        const isContainerProp = (
+          [
+            FieldPropsEnum.isValid,
+            FieldPropsEnum.hasError,
+            FieldPropsEnum.isDirty,
+            FieldPropsEnum.isPristine,
+          ] as string[]
+        ).includes(prop);
         if (
+          isContainerProp ||
           !field.fields.size ||
-          !Array.isArray(field.initial) ||
-          prop === FieldPropsEnum.isValid ||
-          prop === FieldPropsEnum.hasError
+          !Array.isArray(field.initial)
         ) {
           check.push(field[prop]);
         }
@@ -869,23 +883,53 @@ export default abstract class Base<
     }
 
     let key;
-    if (has(obj, FieldPropsEnum.key)) key = obj.key;
-    if (has(obj, FieldPropsEnum.name)) key = obj.name;
-    if (!key) key = maxKey(this.fields);
-
-    const $path = ($key: string) =>
-      [this.path, $key].join(".").replace(/^\.+/, "");
     const tree = pathToFieldsTree(
       this.state.struct(),
       this.path ?? "",
       0,
       true,
     );
-    const field = this.initField(key, $path(key), merge(tree[0], obj));
+    const nestedFields = tree[0]?.fields ?? null;
+
+    // An object without field-definition props, whose keys match the
+    // nested fields of the container, holds the values of the new item
+    // (e.g. add({ name: 'John', qty: 1 })). The 'name' prop is ambiguous:
+    // it is treated as a value only when the container defines a nested
+    // field called 'name'. (#657)
+    const payloadKeys = isPlainObject(obj)
+      ? Object.keys(obj).filter((k) => k !== FieldPropsEnum.key)
+      : [];
+    const isValuesPayload =
+      !!nestedFields &&
+      isPlainObject(obj) &&
+      !has(obj, FieldPropsEnum.value) &&
+      !has(obj, FieldPropsEnum.fields) &&
+      payloadKeys.length > 0 &&
+      (!has(obj, FieldPropsEnum.name) ||
+        Object.prototype.hasOwnProperty.call(nestedFields, FieldPropsEnum.name));
+
+    if (has(obj, FieldPropsEnum.key)) key = obj.key;
+    if (!isValuesPayload && has(obj, FieldPropsEnum.name)) key = obj.name;
+    if (!key) key = maxKey(this.fields);
+
+    const $path = ($key: string) =>
+      [this.path, $key].join(".").replace(/^\.+/, "");
+    const field = this.initField(
+      key,
+      $path(key),
+      isValuesPayload ? tree[0] : merge(tree[0], obj),
+    );
     const hasValues =
       has(obj, FieldPropsEnum.value) || has(obj, FieldPropsEnum.fields);
 
-    if (!hasValues) {
+    if (isValuesPayload) {
+      each(payloadKeys, (fieldName) => {
+        const nestedField = field.select(fieldName);
+        if (nestedField && !nestedField.hasNestedFields) {
+          nestedField.set(FieldPropsEnum.value, (obj as any)[fieldName]);
+        }
+      });
+    } else if (!hasValues) {
       // When the struct defines nested fields and obj is a plain object
       // without field-definition props (key, name), treat obj properties
       // directly as nested field values (e.g. add({ firstname: 'John' }))
@@ -1170,6 +1214,8 @@ export default abstract class Base<
    */
   move(fromIndex: number, toIndex: number): void {
     this.fields.move(fromIndex, toIndex);
+    this.$changed++;
+    this.state.form.$changed++;
   }
 
   /******************************************************************

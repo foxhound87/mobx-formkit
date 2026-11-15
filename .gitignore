@@ -16,3 +16,4 @@ codecov.yml
 nyc_detail
 yarn-error.log
 .qodo
+.vault
