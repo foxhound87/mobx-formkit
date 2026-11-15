@@ -1,3 +1,15 @@
+## 1.1.4 (unreleased)
+
+### Fixes
+
+- fix: `update()` with an array on a field which is not an array container sets the field value, so an empty array empties the field instead of restoring the declared one
+- fix: `update()` and `add()` values take precedence over the declared (separated) values at the same path, so a new item is not replaced by the declared one
+- fix: `reset()` on an array container rebuilds the nested fields from the declared array: the removed items are restored and the added ones dropped
+- fix: `sync()`/`onChange()` with an array on a field with nested fields applies the array to the nested fields instead of being silently dropped
+- fix: `add()` on a field holding a plain array value appends the new item instead of replacing the array
+- fix: `clear()` on an array container empties the array (the nested fields are removed) instead of keeping its length
+- test: add `tests/integration/fixes.arrayfields.ts` covering the array field values after `update()`, `reset()`, `sync()` and `add()`
+
 ## 1.1.3 (2026-11-15)
 
 ### Fixes

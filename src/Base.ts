@@ -302,6 +302,7 @@ export default abstract class Base<
     path: string,
     data: any,
     update: boolean = false,
+    value?: any,
   ): any {
     const initial = this.state.get("current", "props");
     const struct = pathToStruct(path);
@@ -324,7 +325,10 @@ export default abstract class Base<
     };
 
     const props = {
-      $value: get(initial[SeparatedPropsMode.values], path),
+      $value:
+        value !== void 0
+          ? value
+          : get(initial[SeparatedPropsMode.values], path),
       $computed: _try(SeparatedPropsMode.computed),
       $label: _try(SeparatedPropsMode.labels),
       $placeholder: _try(SeparatedPropsMode.placeholders),
@@ -552,6 +556,24 @@ export default abstract class Base<
       );
 
       if ($field != null && field !== void 0) {
+        // an array provided for a field which is not an array container
+        // is the field value itself (not a set of nested fields)
+        const $rawValue = get(raw, $path);
+        const $absPath = [this.path ?? "", $path].join(".").replace(/^\.+/, "");
+        if (Array.isArray($rawValue) && !this.isArrayContainer($absPath)) {
+          $field.value = parseInput(
+            applyInputConverterOnUpdate ? $field.$input : (val) => val,
+            {
+              fallbackValueOption: this.state.options.get(
+                OptionsEnum.fallbackValue,
+                this,
+              ),
+              separated: $rawValue,
+            },
+          );
+          return;
+        }
+
         if (Array.isArray($field.values())) {
           const n: number = Math.max(
             -1,
@@ -607,15 +629,22 @@ export default abstract class Base<
         // init field into the container field
         $container.$changed++;
         $container.state.form.$changed++;
-        $container.initField($key, $newFieldPath, field, true);
+        // the value provided by the update wins over the declared values
+        $container.initField(
+          $key,
+          $newFieldPath,
+          field,
+          true,
+          get(raw, $path),
+        );
       } else if (recursion) {
         if (has(field, FieldPropsEnum.fields) && field.fields != null) {
           // handle nested fields if defined
-          this.deepUpdate(field.fields, $path);
+          this.deepUpdate(field.fields, $path, true, raw);
         } else {
           // handle nested fields if undefined or null
           const $fields = pathToFieldsTree(this.state.struct(), $path);
-          this.deepUpdate($fields, $path, false);
+          this.deepUpdate($fields, $path, false, raw);
         }
       }
     });
@@ -889,7 +918,46 @@ export default abstract class Base<
       return this;
     }
 
-    let key;
+    // a plain field holding an array value gets the new item appended
+    if (
+      this.isPlainArrayField() &&
+      !has(obj, FieldPropsEnum.key) &&
+      !has(obj, FieldPropsEnum.name)
+    ) {
+      const $values = Array.isArray((this as any).value)
+        ? [...((this as any).value as any[])]
+        : [];
+      $values.push(
+        has(obj, FieldPropsEnum.value)
+          ? obj[FieldPropsEnum.value]
+          : defaultValue({
+              fallbackValueOption: this.state.options.get(
+                OptionsEnum.fallbackValue,
+                this,
+              ),
+              nullable: (this as any).$nullable,
+              type: (this as any).type,
+            }),
+      );
+      this.set(FieldPropsEnum.value, $values);
+      this.$changed++;
+      this.state.form.$changed++;
+      execEvent && this.execHook(FieldPropsEnum.onAdd);
+      return this;
+    }
+
+    const field = this.createField(obj);
+
+    this.$changed++;
+    this.state.form.$changed++;
+    execEvent && this.execHook(FieldPropsEnum.onAdd);
+    return field;
+  }
+
+  /**
+    Create a new field into this container (no change counters, no hooks)
+  */
+  createField(obj?: any, key?: string): any {
     const tree = pathToFieldsTree(
       this.state.struct(),
       this.path ?? "",
@@ -915,16 +983,22 @@ export default abstract class Base<
       (!has(obj, FieldPropsEnum.name) ||
         Object.prototype.hasOwnProperty.call(nestedFields, FieldPropsEnum.name));
 
-    if (has(obj, FieldPropsEnum.key)) key = obj.key;
-    if (!isValuesPayload && has(obj, FieldPropsEnum.name)) key = obj.name;
-    if (!key) key = maxKey(this.fields);
+    const $key = key ?? obj?.[FieldPropsEnum.key];
+    const $fieldKey: any =
+      $key !== void 0
+        ? $key
+        : !isValuesPayload && obj?.[FieldPropsEnum.name] !== void 0
+          ? obj[FieldPropsEnum.name]
+          : maxKey(this.fields);
 
-    const $path = ($key: string) =>
-      [this.path, $key].join(".").replace(/^\.+/, "");
+    const $path = ($k: any) =>
+      [this.path, $k].join(".").replace(/^\.+/, "");
     const field = this.initField(
-      key,
-      $path(key),
+      $fieldKey,
+      $path($fieldKey),
       isValuesPayload ? tree[0] : merge(tree[0], obj),
+      false,
+      has(obj, FieldPropsEnum.value) ? obj[FieldPropsEnum.value] : void 0,
     );
     const hasValues =
       has(obj, FieldPropsEnum.value) || has(obj, FieldPropsEnum.fields);
@@ -976,10 +1050,79 @@ export default abstract class Base<
       }
     }
 
-    this.$changed++;
-    this.state.form.$changed++;
-    execEvent && this.execHook(FieldPropsEnum.onAdd);
     return field;
+  }
+
+  /**
+    Checks if the given path refers to an array container
+    (a struct entry like `path[]` or `path[].subfield`)
+  */
+  isArrayContainer(path: string): boolean {
+    const struct = this.state.struct();
+    if (!Array.isArray(struct)) return false;
+    const structPath = (path ?? "").replace(/\.\d+\./g, "[].");
+    return struct.some(
+      (s: any) => typeof s === "string" && s.startsWith(`${structPath}[]`),
+    );
+  }
+
+  /**
+    Checks if the field is a plain field holding an array value
+    (not an array container with nested fields)
+  */
+  isPlainArrayField(): boolean {
+    return (
+      !this.hasNestedFields &&
+      !this.isArrayContainer(this.path ?? "") &&
+      Array.isArray((this as any).value)
+    );
+  }
+
+  /**
+    Applies a value to a field: for fields with nested fields the value is
+    applied to the nested fields, otherwise the field value is set
+  */
+  applyValue($field: any, value: any): void {
+    if (value === void 0) return;
+    if (isPlainObject(value) && $field.fields.size) {
+      each(value, (val, key) => {
+        const $nested = $field.select(key);
+        if ($nested) {
+          $nested.fields.size
+            ? this.applyValue($nested, val)
+            : $nested.set(FieldPropsEnum.value, val);
+        }
+      });
+      return;
+    }
+    $field.set(FieldPropsEnum.value, value);
+  }
+
+  /**
+    Writes an array of values into an array container: the nested fields are
+    created, updated and removed to match the given array
+  */
+  applyArrayValue($field: any, values: any[]): void {
+    // remove the nested fields which are not in the new values
+    getObservableMapValues($field.fields).forEach(($f: any) => {
+      if (Number($f.name) >= values.length) {
+        $field.fields.delete($f.name);
+      }
+    });
+
+    // create or update the nested fields
+    values.forEach((value, index) => {
+      const key = String(index);
+      const $nested = $field.fields.get(key);
+      if ($nested) {
+        this.applyValue($nested, value);
+      } else {
+        $field.createField(
+          isPlainObject(value) ? value : { [FieldPropsEnum.value]: value },
+          key,
+        );
+      }
+    });
   }
 
   /**

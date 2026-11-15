@@ -20,6 +20,7 @@ import {
   isEvent,
   pathToStruct,
   isArrayFromStruct,
+  getObservableMapValues,
 } from "./utils";
 
 import { parseInput, parseCheckOutput, defaultValue } from "./parser";
@@ -552,22 +553,25 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     const $get = ($: any) =>
       isBool($, this.value) ? $.target.checked : $.target.value;
 
-    // assume "v" or "e" are the values
+    // resolve the value to be set
+    let $value: any;
     if (isNil(e) || isNil(e.target)) {
       if (!isNil(v) && !isNil(v.target)) {
         v = $get(v); // eslint-disable-line
       }
+      $value = $try(e, v);
+    } else {
+      $value = $get(e);
+    }
 
-      this.value = $try(e, v);
+    // an array set on a field with nested fields is applied to the nested
+    // fields, otherwise the value would be silently dropped
+    if (this.hasNestedFields && Array.isArray($value)) {
+      (this.state.form as any).applyArrayValue(this, $value);
       return;
     }
 
-    if (!isNil(e.target)) {
-      this.value = $get(e);
-      return;
-    }
-
-    this.value = e;
+    this.value = $value;
   });
 
   onSync = (...args: any) =>
@@ -877,7 +881,14 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       type: this.type,
     });
 
-    deep && this.each((field: FieldInterface) => field.clear(deep));
+    if (this.isArrayContainer(this.path ?? "") && Array.isArray(this.value)) {
+      // an array container is emptied: the nested fields are removed
+      getObservableMapValues(this.fields).forEach(($f: any) =>
+        this.fields.delete($f.name),
+      );
+    } else {
+      deep && this.each((field: FieldInterface) => field.clear(deep));
+    }
 
     this.state.options.get(OptionsEnum.validateOnClear, this)
       ? this.validate({
@@ -898,10 +909,37 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     this.files = undefined;
 
     const useDefaultValue = this.$default !== this.$initial;
-    if (useDefaultValue) this.value = this.$default;
-    if (!useDefaultValue) this.value = this.$initial;
+    const $target = useDefaultValue ? this.$default : this.$initial;
 
-    deep && this.each((field: FieldInterface) => field.reset(deep));
+    if (
+      this.isArrayContainer(this.path ?? "") &&
+      !useDefaultValue &&
+      Array.isArray($target)
+    ) {
+      // an array container is rebuilt from its initial (or default) array:
+      // the removed nested fields are restored and the added ones dropped
+      const $values = $target as any[];
+      const $fields = getObservableMapValues(this.fields);
+      const $match =
+        $fields.length === $values.length &&
+        $fields.every(($f: any, i: number) => isEqual($f.value, $values[i]));
+      if (!$match) {
+        $fields.forEach(($f: any) => this.fields.delete($f.name));
+        $values.forEach((value, index) =>
+          this.createField(
+            isPlainObject(value) ? value : { [FieldPropsEnum.value]: value },
+            String(index),
+          ),
+        );
+      } else {
+        deep && this.each((field: FieldInterface) => field.reset(deep));
+      }
+    } else {
+      if (useDefaultValue) this.value = this.$default;
+      if (!useDefaultValue) this.value = this.$initial;
+
+      deep && this.each((field: FieldInterface) => field.reset(deep));
+    }
 
     this.state.options.get(OptionsEnum.validateOnReset, this)
       ? this.validate({
