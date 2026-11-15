@@ -2,7 +2,7 @@
 
 Observe field changes reactively using MobX `observe()`. Track value changes and trigger side effects — combined with `autorun()` for computed values.
 
-> 🔗 **Live Demo:** [Observers](https://foxhound87.github.io/mobx-formkit-demo/?section=observers)  
+> 🔗 **Live Demo:** [Observers](https://foxhound87.github.io/mobx-formkit-demo/form/observers)  
 > 📁 **Source:** [FormObservers.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormObservers.tsx)  
 > 📁 **Setup:** [observers.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/observers.ts)
 

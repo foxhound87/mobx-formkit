@@ -38,7 +38,7 @@ The `call` function will receive the `Form` instance, the `Field` instance and t
 
 > The **intercept** function must return a new mobx `change` event object.
 
-> For more info on the mobx `change` event object take a look at the mobx [Event Overview Table](http://mobxjs.github.io/mobx/refguide/observe.html).
+> For more info on the mobx `change` event object take a look at the mobx [Event Overview Table](https://mobxjs.github.io/mobx/refguide/observe/).
 
 
 Eventually you can use `observe()` / `intercept()` also on a selected Field:

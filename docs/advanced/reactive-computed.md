@@ -2,7 +2,7 @@
 
 Compute **row-level totals** that reactively update when input fields change — without manual event handlers. Uses MobX `autorun()` to observe field values and recalculate derived data on every keystroke.
 
-> 🔗 **Live Demo:** [Reactive Computed](https://foxhound87.github.io/mobx-formkit-demo/?section=reactiveComputed)  
+> 🔗 **Live Demo:** [Reactive Computed](https://foxhound87.github.io/mobx-formkit-demo/form/reactiveComputed)  
 > 📁 **Source:** [FormReactiveComputed.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormReactiveComputed.tsx)  
 > 📁 **Setup:** [reactiveComputed.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/reactiveComputed.ts)
 

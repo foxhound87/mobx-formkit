@@ -2,7 +2,7 @@
 
 A **live markdown editor** where a textarea bound to a form field renders a real-time preview via `react-markdown`. Because the form field is a MobX observable, every keystroke immediately updates the preview.
 
-> 🔗 **Live Demo:** [Markdown Editor](https://foxhound87.github.io/mobx-formkit-demo/?section=markdown)  
+> 🔗 **Live Demo:** [Markdown Editor](https://foxhound87.github.io/mobx-formkit-demo/form/markdown)  
 > 📁 **Source:** [FormMarkdown.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormMarkdown.tsx)  
 > 📁 **Setup:** [markdown.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/markdown.ts)
 

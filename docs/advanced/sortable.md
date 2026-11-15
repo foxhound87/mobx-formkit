@@ -2,7 +2,7 @@
 
 Array fields in MobX Formkit are backed by `ArrayMap` — an ordered key-value collection that exposes array-like operations while maintaining full MobX reactivity. This enables **drag-and-drop reordering** of dynamic array items.
 
-> 🔗 **Live Demo:** [Sortable List](https://foxhound87.github.io/mobx-formkit-demo/?section=sortableList)  
+> 🔗 **Live Demo:** [Sortable List](https://foxhound87.github.io/mobx-formkit-demo/form/sortableList)  
 > 📁 **Demo Source:** [FormSortableList.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormSortableList.tsx)  
 > 📁 **Form Setup:** [sortableList.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/sortableList.ts)
 

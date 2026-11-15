@@ -20,4 +20,4 @@ form.validating;            // true while any async validation is running
 form.$('email').validating; // true while the field is being validated
 ```
 
-> Read more about [Validation](https://vinejs.dev/docs/validation) on the official VineJS documentation.
+> Read more about [Validation](https://vinejs.dev/docs/schema_101) on the official VineJS documentation.

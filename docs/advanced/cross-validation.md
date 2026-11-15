@@ -2,7 +2,7 @@
 
 Validate **related fields** across different sections of a form by combining nested field groups. Each section validates independently with its own rules, then the results are aggregated together.
 
-> 🔗 **Live Demo:** [Cross Validation](https://foxhound87.github.io/mobx-formkit-demo/?section=crossValidation)  
+> 🔗 **Live Demo:** [Cross Validation](https://foxhound87.github.io/mobx-formkit-demo/form/crossValidation)  
 > 📁 **Source:** [FormCrossValidation.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormCrossValidation.tsx)  
 > 📁 **Setup:** [crossValidation.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/crossValidation.ts)
 

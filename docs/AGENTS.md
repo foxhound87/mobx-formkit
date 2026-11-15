@@ -12,10 +12,10 @@ A concise guide for LLMs working with **MobX Formkit** — the reactive MobX for
 | **NPM** | [npmjs.com/package/mobx-formkit](https://www.npmjs.com/package/mobx-formkit) |
 | **GitHub** | [github.com/foxhound87/mobx-formkit](https://github.com/foxhound87/mobx-formkit) |
 | **Docs** | [foxhound87.github.io/mobx-formkit](https://foxhound87.github.io/mobx-formkit/) |
-| **Version** | 7.x (current: 7.1.0) |
+| **Version** | 1.x (current: 1.2.0) |
 | **Size** | ~8KB gzip (tree-shakeable) |
 | **License** | MIT |
-| **Dependencies** | MobX 5, 6 & 7 (peer: `^5.15.0 || ^6.0.0 || ^7.0.0`), lodash, React (optional) |
+| **Dependencies** | MobX 5, 6 & 7 (peer: `^5.15.0 \|\| ^6.0.0 \|\| ^7.0.0`), lodash, React (optional) |
 
 ---
 
@@ -104,7 +104,7 @@ Form(setup: FieldsDefinitions, config: FormConfig)
 | `hooks` | `{ onInit?, onChange?, onSuccess?, onError?, ... }` | Lifecycle callbacks |
 | `handlers` | `{ onSubmit?, onKeyDown?, ... }` | Custom event handlers (curried) |
 | `options` | `OptionsModel` | Form behavior flags |
-| `bindings` | `Record<string, Rewriter | Template>` | Custom bindings for UI libs |
+| `bindings` | `Record<string, Rewriter \| Template>` | Custom bindings for UI libs |
 | `extra` | `Record<string, any>` | Arbitrary metadata |
 | `name` | `string` | Form name for debugging |
 
@@ -624,12 +624,12 @@ All properties you can define per field:
 |--------|--------|
 | **Handlers are curried** | Custom handlers: `(field) => (e) => {}`, not `(field, e) => {}`. |
 | **`submitThrowsError: true`** | Default — wrap `submit()` in try/catch or use validation hooks. |
-| **`onSubmit` hook** receives form, not field. `onSuccess`/`onError` receive form. |
-| **`field.bind()`** sets `field.$ref` after render. Access in `useEffect` or similar. |
-| **`softDelete`** requires `softDelete: true` option; deleted fields are excluded from `values()`. |
-| **`fallback: false`** + missing fields from struct won't be auto-created. Useful for strict schemas. |
-| **`strictSelect: true`** (default) throws on invalid field paths — catch or disable for dynamic paths. |
-| **`fallbackValue`** controls the default empty value (`''` by default; can be `null`, `undefined`, `0`). |
+| **`onSubmit` hook** | Receives form, not field. `onSuccess`/`onError` receive form. |
+| **`field.bind()`** | Sets `field.$ref` after render. Access in `useEffect` or similar. |
+| **`softDelete`** | Requires the `softDelete: true` option; deleted fields are excluded from `values()`. |
+| **`fallback: false`** | Missing fields from the struct won't be auto-created. Useful for strict schemas. |
+| **`strictSelect: true`** (default) | Throws on invalid field paths — catch or disable for dynamic paths. |
+| **`fallbackValue`** | Controls the default empty value (`''` by default; can be `null`, `undefined`, `0`). |
 
 ---
 
@@ -710,7 +710,7 @@ const bindings = {
 | [mobx-formkit-demo](https://github.com/foxhound87/mobx-formkit-demo) | Live demo app with React components |
 | [mobx-formkit-devtools](https://github.com/foxhound87/mobx-formkit-devtools) | DevTools panel for debugging |
 | [skills](https://github.com/foxhound87/skills) | AI skill files for Cursor, Windsurf, Claude Code, Codebuff |
-| [mobx-formkit--docs](https://github.com/foxhound87/mobx-formkit--docs) | This documentation site |
+| [mobx-formkit docs](https://foxhound87.github.io/mobx-formkit/) | This documentation site (sources on the `docs` branch) |
 
 ---
 

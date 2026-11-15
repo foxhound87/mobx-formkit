@@ -222,7 +222,7 @@ Available events: `validate`, `update`, `clear`, `reset`.
 
 The callback receives: `{ form, field, path, event, change }`.
 
-> For more info on the mobx `change` object, see the [mobx observe documentation](https://mobxjs.github.io/mobx/refguide/observe.md).
+> For more info on the mobx `change` object, see the [mobx observe documentation](https://mobxjs.github.io/mobx/refguide/observe/).
 
 </details>
 

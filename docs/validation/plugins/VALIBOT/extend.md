@@ -2,7 +2,7 @@
 
 Using `valibot` as plugin, the **VALIBOT** schema validation is enabled and can be extended too.
 
-> See the valibot documentation: [Validation & Transformation](https://valibot.dev/guides/validate/) for a deeper explanation.
+> See the valibot documentation: [Validation & Transformation](https://valibot.dev/guides/methods/) for a deeper explanation.
 
 Below we see how to implement it in `mobx-formkit`:
 

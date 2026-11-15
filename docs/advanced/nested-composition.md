@@ -2,7 +2,7 @@
 
 Compose **completely independent Form instances** within a single view, each with its own fields, validation rules, lifecycle, and state — orchestrated together by a parent component.
 
-> 🔗 **Live Demo:** [Nested Composition](https://foxhound87.github.io/mobx-formkit-demo/?section=nestedComposition)  
+> 🔗 **Live Demo:** [Nested Composition](https://foxhound87.github.io/mobx-formkit-demo/form/nestedComposition)  
 > 📁 **Source:** [FormNestedComposition.tsx](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/components/forms/FormNestedComposition.tsx)  
 > 📁 **Setup:** [nestedComposition.ts](https://github.com/foxhound87/mobx-formkit-demo/blob/master/src/forms/setup/nestedComposition.ts)
 

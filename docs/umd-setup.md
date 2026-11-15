@@ -5,7 +5,7 @@
 Import `mobx` and `mobx-formkit` into your html:
 
 * Download [latest version of lodash](https://unpkg.com/lodash/lodash.min.js)
-* Download [latest version of mobx](https://unpkg.com/mobx/lib/mobx.umd.js)
+* Download [latest version of mobx](https://unpkg.com/mobx/dist/mobx.umd.production.min.js)
 * Download [latest version of mobx-formkit](https://unpkg.com/mobx-formkit/umd/MobxFormkit.umd.min.js)
 * Download a [Validation Plugin](validation/plugins.md)
 
@@ -20,7 +20,7 @@ Import `mobx` and `mobx-formkit` into your html:
   </head>
   <body>
     <script src="https://unpkg.com/lodash@x.x.x/lodash.min.js"></script>
-    <script src="https://unpkg.com/mobx@x.x.x/lib/mobx.umd.js"></script>
+    <script src="https://unpkg.com/mobx@x.x.x/dist/mobx.umd.production.min.js"></script>
     <script src="https://unpkg.com/mobx-formkit@x.x.x/umd/MobxFormkit.umd.min.js"></script>
     <script src="https://unpkg.com/mobx-formkit@x.x.x/umd/MobxFormkitValidatorDVR.umd.min.js"></script>
     <script src="https://unpkg.com/validatorjs@x.x.x/dist/validator.js"></script>

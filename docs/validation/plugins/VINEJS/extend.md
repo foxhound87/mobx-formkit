@@ -2,7 +2,7 @@
 
 Using `@vinejs/vine` as plugin, the **VINEJS** schema validation is enabled and can be extended too.
 
-> See the VineJS documentation: [Extending Vine](https://vinejs.dev/docs/custom_rules) for a deeper explanation.
+> See the VineJS documentation: [Extending Vine](https://vinejs.dev/docs/extend/custom_rules) for a deeper explanation.
 
 Below we see how to implement it in `mobx-formkit`:
 
