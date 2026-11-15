@@ -7,15 +7,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: docs-deploy
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
-    name: Build the site and deploy it to gh-pages
+  build:
+    name: Build the site and deploy it to GitHub Pages
     runs-on: ubuntu-latest
 
     steps:
@@ -38,15 +40,17 @@ jobs:
       - name: Build the site
         run: npm run docs:build
 
-      - name: Deploy to the gh-pages branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd _book
-          git init .
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout --orphan gh-pages
-          git add -A
-          git commit -m "docs: rebuild site"
-          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          # switches the Pages source to "GitHub Actions" if it is not yet
+          enablement: true
+
+      - name: Upload the site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _book
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -6,3 +6,10 @@
 *.log
 .qodo
 
+# local notes and the library build artifacts (not part of the docs site)
+/.vault
+/lib
+/umd
+/coverage
+/.nyc_output
+/demo.html
