@@ -10,6 +10,7 @@ export enum OptionsEnum {
   showErrorsOnChange = 'showErrorsOnChange',
   showErrorsOnClear = 'showErrorsOnClear',
   showErrorsOnReset = 'showErrorsOnReset',
+  showErrorsOnRestore = 'showErrorsOnRestore',
   validateOnInit = 'validateOnInit',
   validateOnSubmit = 'validateOnSubmit',
   validateOnBlur = 'validateOnBlur',
@@ -22,6 +23,7 @@ export enum OptionsEnum {
   validateTrimmedValue = 'validateTrimmedValue',
   validateOnClear = 'validateOnClear',
   validateOnReset = 'validateOnReset',
+  validateOnRestore = 'validateOnRestore',
   strictSet = 'strictSet',
   strictUpdate = 'strictUpdate',
   strictDelete = 'strictDelete',
@@ -58,6 +60,7 @@ export interface OptionsModel {
   [OptionsEnum.showErrorsOnChange]?: boolean;
   [OptionsEnum.showErrorsOnClear]?: boolean;
   [OptionsEnum.showErrorsOnReset]?: boolean;
+  [OptionsEnum.showErrorsOnRestore]?: boolean;
   [OptionsEnum.validateOnInit]?: boolean;
   [OptionsEnum.validateOnSubmit]?: boolean;
   [OptionsEnum.validateOnBlur]?: boolean;
@@ -66,6 +69,7 @@ export interface OptionsModel {
   [OptionsEnum.validateOnChangeAfterSubmit]?: boolean;
   [OptionsEnum.validateOnClear]?: boolean;
   [OptionsEnum.validateOnReset]?: boolean;
+  [OptionsEnum.validateOnRestore]?: boolean;
   [OptionsEnum.validateDisabledFields]?: boolean;
   [OptionsEnum.validateDeletedFields]?: boolean;
   [OptionsEnum.validatePristineFields]?: boolean;

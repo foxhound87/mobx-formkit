@@ -108,6 +108,9 @@ export default class Form<F extends Record<string, any> = Record<string, any>> e
 
     this.initFields(initial.setup);
 
+    // the restore reference starts from the reset target of the fields
+    this.initCommittedSnapshot();
+
     this.debouncedValidation = debounce(
       this.validate,
       this.state.options.get(OptionsEnum.validationDebounceWait),

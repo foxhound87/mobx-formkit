@@ -1,3 +1,18 @@
+## 1.3.0 (unreleased)
+
+### Features
+
+- feat: `commit()` captures the current values as the restore reference and `restore()` brings them back — available on **Form** and on the nested fields (sub-forms)
+- feat: `committed()` returns the captured values (read only), to compute the not committed delta
+- feat: new `validateOnRestore` and `showErrorsOnRestore` form options: the restored values are validated when `validateOnRestore` is enabled
+
+### Notes
+
+- `reset()` is unchanged: it keeps restoring the `initial` (or the `default` when it differs from the `initial`)
+- before the first `commit()` the restore reference is the reset target of the form
+- `restore()` restores the values only: the fields added after the commit are kept, the deleted ones are not recreated, the array containers follow the snapshot (content and order)
+- `isDirty`/`isPristine` keep comparing with `initial`/`default`
+
 ## 1.2.0 (2026-11-15)
 
 ### Features

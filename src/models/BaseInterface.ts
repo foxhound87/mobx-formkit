@@ -40,6 +40,9 @@ export interface BaseInterface<F extends Record<string, any> = Record<string, an
   onAdd(args: any): any;
   onDel(args: any): any;
   firstError(): string | null;
+  commit(): void;
+  restore(): void | Promise<any>;
+  committed(): any;
 }
 
 export default BaseInterface;

@@ -1,4 +1,4 @@
-import { has, isEmpty, isPlainObject } from "lodash";
+import { each, has, isEmpty, isPlainObject } from "lodash";
 import { values as mobxValues, keys as mobxKeys } from "mobx";
 import { FieldInterface } from "./models/FieldInterface";
 import { AllowedFieldPropsTypes, FieldPropsEnum, FieldPropsOccurrence } from "./models/FieldProps";
@@ -165,6 +165,25 @@ const maxKey = (fields: any): number => {
   return maxVal === void 0 ? 0 : maxVal + 1;
 };
 
+/**
+  Clones a value tree keeping it independent from the original one.
+
+  Plain objects, arrays and dates are cloned, any other object (File, Blob,
+  class instances, ...) is kept by reference because it cannot be cloned
+  safely.
+*/
+const cloneValues = (value: any): any => {
+  if (value === null || typeof value !== "object") return value;
+  if (Array.isArray(value)) return value.map((item: any) => cloneValues(item));
+  if (value instanceof Date) return new Date(value.getTime());
+  if (!isPlainObject(value)) return value;
+  const result: any = {};
+  each(Object.keys(value), (key: string) => {
+    result[key] = cloneValues(value[key]);
+  });
+  return result;
+};
+
 let _idCounter = 0;
 const _localUniqueId = (prefix: string): string => `${prefix}${++_idCounter}`;
 
@@ -207,6 +226,7 @@ export {
   parseIntKeys,
   hasIntKeys,
   maxKey,
+  cloneValues,
   uniqueId,
   isEvent,
   hasFiles,
