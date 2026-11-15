@@ -1,9 +1,15 @@
-## 1.1.0 (2026-08-16)
+## 1.1.3 (2026-11-15)
 
-### Features
+### Fixes
 
-- devtools: add opt-in devtools hook entry with exports (dda0682)
-- devtools: enrich snapshots with helpers, options and batched emission (dbe2181)
+- fix: array fields dirty state — `form.isDirty`/`form.isPristine` now account for array containers after `add()`/`del()`, `move()` marks the field and the form as dirty, and `add({ name: 'John' })` on a nested array sets the item values instead of using the value as the container key (#657)
+- test: add `tests/integration/fixes.657.ts` covering array container dirty state, `move()` dirty tracking and `add()` values payload (#657)
+
+## 1.1.2 (2026-11-05)
+
+### Fixes
+
+- fix: include array containers in form isValid/hasError aggregation ([4a820c5](https://github.com/foxhound87/mobx-formkit/commit/4a820c52c7d9ff2fc11327c6ec717bb90442ee33)) (#656)
 
 ## 1.1.1 (2026-08-18)
 
@@ -11,11 +17,12 @@
 
 - fix: emit form:new event to devtools hook on form construction (6e328f9)
 
-## 1.1.2 (2026-11-05)
+## 1.1.0 (2026-08-16)
 
-### Fixes
+### Features
 
-- fix: include array containers in form isValid/hasError aggregation ([4a820c5](https://github.com/foxhound87/mobx-formkit/commit/4a820c52c7d9ff2fc11327c6ec717bb90442ee33)) (#656)
+- devtools: add opt-in devtools hook entry with exports (dda0682)
+- devtools: enrich snapshots with helpers, options and batched emission (dbe2181)
 
 # 1.0.0
 
