@@ -123,4 +123,51 @@ describe("ArrayMap.move", () => {
       ]);
     });
   });
+
+  describe("merge / replace / iteration", () => {
+    it("merges a plain object", () => {
+      map.merge({ f: "foxtrot" });
+      expect(map.get("f")).to.equal("foxtrot");
+      expect(map.size).to.equal(6);
+    });
+
+    it("merges a map-like object", () => {
+      const other = new ArrayMap<string, string>([["f", "foxtrot"]]);
+      map.merge(other);
+      expect(map.get("f")).to.equal("foxtrot");
+      expect(map.size).to.equal(6);
+    });
+
+    it("ignores invalid merge sources", () => {
+      map.merge(null);
+      map.merge(42);
+      expect(map.size).to.equal(5);
+    });
+
+    it("replaces the content", () => {
+      map.replace({ x: "xray" });
+      expect(map.size).to.equal(1);
+      expect(map.get("x")).to.equal("xray");
+    });
+
+    it("is iterable", () => {
+      expect([...map].map(([k]) => k)).to.deep.equal([
+        "a", "b", "c", "d", "e",
+      ]);
+    });
+
+    it("exposes a toString tag", () => {
+      expect(map.toString()).to.equal("[object ArrayMap]");
+    });
+
+    it("serializes to a plain object", () => {
+      expect(map.toJSON()).to.deep.equal({
+        a: "alpha",
+        b: "bravo",
+        c: "charlie",
+        d: "delta",
+        e: "echo",
+      });
+    });
+  });
 });
