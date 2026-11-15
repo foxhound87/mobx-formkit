@@ -35,6 +35,7 @@ Control when validation runs.
 | **validateOnChangeAfterInitialBlur** | boolean | `false` | Validate on change only after the field has been blurred at least once |
 | **validateOnClear** | boolean | `false` | Validate after `clear()` |
 | **validateOnReset** | boolean | `false` | Validate after `reset()` |
+| **validateOnRestore** | boolean | `false` | Validate after `restore()` |
 | **validateDeletedFields** | boolean | `false` | Include soft-deleted fields in validation |
 | **validateDisabledFields** | boolean | `false` | Include disabled fields in validation |
 | **validatePristineFields** | boolean | `true` | Include untouched fields in validation |
@@ -65,6 +66,7 @@ Control when and how error messages are shown.
 | **showErrorsOnChange** | boolean | `true` | Show errors on value change |
 | **showErrorsOnClear** | boolean | `false` | Show errors after `clear()` |
 | **showErrorsOnReset** | boolean | `true` | Show errors after `reset()` |
+| **showErrorsOnRestore** | boolean | `false` | Show errors after `restore()` |
 | **defaultGenericError** | string | `null` | Generic error message shown when validation fails |
 | **submitThrowsError** | boolean | `true` | If true, `submit()` throws when validation fails (requires `defaultGenericError`) |
 | **bubbleUpErrorMessages** | boolean | `false` | Container fields show the first child error instead of `null` |

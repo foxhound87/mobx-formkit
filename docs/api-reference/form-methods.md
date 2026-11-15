@@ -4,6 +4,9 @@
 |---|---|---|---|---|
 | **clear()** | - | void | Clear the Form to empty values. | [help](../actions/clear-reset.md#clear) |
 | **reset()** | - | void | Reset the Form to default values. | [help](../actions/clear-reset.md#reset) |
+| **commit()** | - | void | Capture the current values as the restore reference. | [help](../actions/commit-restore.md#overview) |
+| **restore()** | - | void or promise | Restore the values captured by the last `commit()`. | [help](../actions/commit-restore.md#overview) |
+| **committed()** | - | object | The values captured by the last `commit()` (read only). | [help](../actions/commit-restore.md#overview) |
 | **invalidate(msg)** | (string) | void | Mark the field as invalid. Pass an optional error message or a default error will be shown. | [help](../actions/validate.md#invalidate) |
 | **resetValidation(deep)** | (boolean) | void | Reset the form validation status. Pass `true` for deep reset of nested fields. | [help](../actions/validate.md#resetvalidation) |
 | **showErrors(bool)** | (boolean) | void | Show or Hide Field Error Messages. | [help](../actions/validate.md#showerrors) |
