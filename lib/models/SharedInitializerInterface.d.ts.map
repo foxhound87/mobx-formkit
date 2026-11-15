@@ -1,0 +1,1 @@
+{"version":3,"file":"SharedInitializerInterface.d.ts","sourceRoot":"","sources":["../../src/models/SharedInitializerInterface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,0BAA0B;IACzC,UAAU,CAAC,OAAO,EAAE,GAAG,EAAE,MAAM,EAAE,OAAO,GAAG,IAAI,CAAC;IAChD,SAAS,CAAC,GAAG,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,GAAG,EAAE,MAAM,EAAE,OAAO,GAAG,GAAG,CAAC;CACvE;AAED,eAAe,0BAA0B,CAAC"}

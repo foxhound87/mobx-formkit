@@ -17,6 +17,7 @@ form.$('username').clear(); // clear a single field
 - Resets `touched`, `blurred`, `changed`, and `files`
 - If `validateOnClear` is enabled, re-validates the field
 - Recursively clears nested fields by default
+- An array container is emptied: its nested fields are removed, so its value becomes `[]`
 
 > This is an action, not an Event Handler. Use `onClear(e)` to trigger hooks.
 
@@ -36,6 +37,7 @@ form.$('username').reset(); // reset a single field
 - Resets `touched`, `blurred`, `changed`, and `files`
 - If `validateOnReset` is enabled, re-validates the field
 - Recursively resets nested fields by default
+- An array container is rebuilt from its declared array: the items removed by an `update()` are restored and the items added by an `update()` are dropped
 
 > This is an action, not an Event Handler. Use `onReset(e)` to trigger hooks.
 

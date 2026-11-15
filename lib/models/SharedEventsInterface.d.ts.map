@@ -1,0 +1,1 @@
+{"version":3,"file":"SharedEventsInterface.d.ts","sourceRoot":"","sources":["../../src/models/SharedEventsInterface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,SAAS,CAAC,MAAM,EAAE,GAAG,GAAG,IAAI,CAAC;IAC7B,OAAO,CAAC,MAAM,EAAE,GAAG,GAAG,IAAI,CAAC;IAC3B,UAAU,IAAI,IAAI,CAAC;IACnB,aAAa,CAAC,MAAM,EAAE,GAAG,GAAG,IAAI,CAAC;CAClC;AAED,eAAe,qBAAqB,CAAC"}

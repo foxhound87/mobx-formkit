@@ -25,6 +25,15 @@ form.$('hobbies').add({ value: 'soccer' });
 form.$('hobbies').add({ value: 'tennis' });
 ```
 
+When the field already holds an array value, the new item is **appended** to it:
+
+```javascript
+const form = new Form({ fields: ['hobbies'], values: { hobbies: ['Golf'] } });
+
+form.$('hobbies').add({ value: 'Tennis' });
+form.$('hobbies').value; // ['Golf', 'Tennis']
+```
+
 ### Nested arrays (fields with sub-fields)
 
 Pass the field values directly — no `value` wrapper needed:

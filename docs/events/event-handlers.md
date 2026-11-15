@@ -41,6 +41,7 @@ The `sync()` method handles multiple input types automatically:
 |---|---|
 | Event with `e.target` (standard input) | Reads `e.target.value` (or `e.target.checked` for checkbox) |
 | Direct value (string, number) | Sets the value directly |
+| Array value | Applied to the nested fields of an array container (items are created, updated and removed to match the array) |
 | Two arguments: `sync(e, value)` | Uses the second argument `value` |
 | `null` or `undefined` | Tries the second argument `v`, then uses `$try(e, v)` |
 

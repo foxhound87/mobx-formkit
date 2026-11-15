@@ -112,4 +112,20 @@ form.update({
 });
 ```
 
+The provided values win over the declared ones: an item created by `update()` takes the value provided by the update, not the value declared at the same position.
+
+```javascript
+const form = new Form({ fields: ['tags'], values: { tags: [1, 2] } });
+
+form.update({ tags: [9, 8, 7] });
+form.$('tags').value; // [9, 8, 7]
+```
+
+An array provided for a field which is **not** an array container (a field without nested fields) is the field value itself, so it can be emptied:
+
+```javascript
+form.update({ tags: [] });
+form.$('tags').value; // []
+```
+
 > `update()` only accepts plain objects and will throw an error otherwise.

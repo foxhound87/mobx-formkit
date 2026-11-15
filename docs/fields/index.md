@@ -378,26 +378,26 @@ const labels = {
 
 ## Mixed Mode (Unified + Separated)
 
-You can combine both modes. Props defined in the `fields` object (unified) take precedence over separated props:
+You can combine both modes. The separated props are the source of truth for the props they define, while the unified definition provides the field structure and the props which are not defined in separated mode:
 
 ```javascript
 new Form({
-  // Separated mode props (applied first)
+  // Separated mode props (the source of truth)
   values: { username: 'SteveJobs' },
   labels: { username: 'Username' },
   rules:  { username: 'required|string' },
 
-  // Unified mode override (takes precedence)
+  // Unified mode: the structure and the props not defined in separated mode
   fields: {
     username: {
-      type: 'email',     // overrides default 'text'
+      type: 'email',     // used, no separated type is defined
       disabled: false,
     },
   },
 });
 ```
 
-> When `fallback` option is `true` (default), field props not found in separated mode fall back to the unified definition.
+> When the same prop is defined in both modes, the **separated** one wins. When `fallback` option is `true` (default), the field props not found in separated mode fall back to the unified definition.
 
 ---
 

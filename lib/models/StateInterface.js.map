@@ -1,0 +1,1 @@
+{"version":3,"file":"StateInterface.js","sources":["../../src/models/StateInterface.ts"],"sourcesContent":[null],"names":["RuntimeMode"],"mappings":";;AAIYA;AAAZ,CAAA,UAAY,WAAW,EAAA;AACrB,IAAA,WAAA,CAAA,OAAA,CAAA,GAAA,OAAe;AACf,IAAA,WAAA,CAAA,SAAA,CAAA,GAAA,SAAmB;AACnB,IAAA,WAAA,CAAA,WAAA,CAAA,GAAA,WAAuB;AACzB,CAAC,EAJWA,mBAAW,KAAXA,mBAAW,GAAA,EAAA,CAAA,CAAA;;"}
