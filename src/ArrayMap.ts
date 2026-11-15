@@ -15,6 +15,9 @@ export class ArrayMap<K = string, V = any> {
   /** Duck-typing marker for utility code */
   _isArrayMap = true;
 
+  /** Called after a successful `move()` — used to flag the change as dirty */
+  onMove?: () => void;
+
   /** Internal observable array: entries stored as [key, value] pairs */
   private _entries: IObservableArray<[K, V]> = observable.array<[K, V]>([]);
 
@@ -150,6 +153,7 @@ export class ArrayMap<K = string, V = any> {
 
       const [entry] = this._entries.splice(fromIndex, 1);
       this._entries.splice(toIndex, 0, entry);
+      this.onMove?.();
     });
   }
 

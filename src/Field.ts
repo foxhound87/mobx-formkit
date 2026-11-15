@@ -503,12 +503,13 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
 
   get isDirty(): boolean {
     const value = this.changed ? this.value : this.initial;
-    return !isEqual(this.initial, value);
+    // a soft deleted field differs from its initial state
+    return !isEqual(this.initial, value) || this.deleted;
   }
 
   get isPristine(): boolean {
     const value = this.changed ? this.value : this.initial;
-    return isEqual(this.initial, value);
+    return isEqual(this.initial, value) && !this.deleted;
   }
 
   get isEmpty(): boolean {
@@ -539,9 +540,9 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
   }
 
   get deleted(): boolean {
-    return this.hasNestedFields
-      ? this.check(FieldPropsEnum.deleted, true)
-      : this.$deleted;
+    // an explicit flag on the field itself always wins
+    if (this.$deleted) return true;
+    return this.hasNestedFields ? this.check(FieldPropsEnum.deleted, true) : false;
   }
 
   /* ------------------------------------------------------------------ */

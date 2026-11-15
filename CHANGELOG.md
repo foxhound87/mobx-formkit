@@ -3,6 +3,9 @@
 ### Fixes
 
 - fix: array fields dirty state — `form.isDirty`/`form.isPristine` now account for array containers after `add()`/`del()`, `move()` marks the field and the form as dirty, and `add({ name: 'John' })` on a nested array sets the item values instead of using the value as the container key (#657)
+- fix: `fields.move()` called directly on an array container marks the field and the form as changed, as `move()` does (#657)
+- fix: a soft deleted field is now dirty (and not pristine), so `form.isDirty` reflects the deletion (#657)
+- fix: a field flagged as deleted reports `deleted === true` even when it has nested fields (#657)
 - test: add `tests/integration/fixes.657.ts` covering array container dirty state, `move()` dirty tracking and `add()` values payload (#657)
 
 ## 1.1.2 (2026-11-05)

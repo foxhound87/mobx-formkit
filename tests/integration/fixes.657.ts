@@ -157,6 +157,39 @@ describe("Issue #657 - array fields dirty state and add() values", () => {
     });
   });
 
+  describe("follow-ups", () => {
+    it("marks the form dirty when fields.move() is called directly", () => {
+      const form = new Form({
+        struct: ["members[].name"],
+        values: { members: [{ name: "A" }, { name: "B" }] },
+      });
+
+      form.$("members").fields.move(0, 1);
+
+      expect(form.values()).to.deep.equal({
+        members: [{ name: "B" }, { name: "A" }],
+      });
+      expect(form.$("members").isDirty).to.equal(true);
+      expect(form.isDirty).to.equal(true);
+      expect(form.isPristine).to.equal(false);
+    });
+
+    it("marks the form dirty on soft delete", () => {
+      const form = new Form(
+        { struct: ["email", "phone"] },
+        { options: { softDelete: true } },
+      );
+
+      form.del("email");
+
+      expect(form.$("email").deleted).to.equal(true);
+      expect(form.$("email").isDirty).to.equal(true);
+      expect(form.$("email").isPristine).to.equal(false);
+      expect(form.isDirty).to.equal(true);
+      expect(form.isPristine).to.equal(false);
+    });
+  });
+
   describe("regressions", () => {
     it("keeps the form pristine when nothing changes", () => {
       const form = new Form({

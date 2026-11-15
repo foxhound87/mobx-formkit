@@ -112,6 +112,13 @@ export default abstract class Base<
       del: action,
       move: action,
     });
+
+    // Any reorder of the fields (also when `fields.move()` is called
+    // directly) flags the field and the form as changed. (#657)
+    this.fields.onMove = () => {
+      this.$changed++;
+      this.state.form.$changed++;
+    };
   }
 
   execHook = (name: string, fallback: any = {}, ...args: any[]): any =>
@@ -1214,8 +1221,6 @@ export default abstract class Base<
    */
   move(fromIndex: number, toIndex: number): void {
     this.fields.move(fromIndex, toIndex);
-    this.$changed++;
-    this.state.form.$changed++;
   }
 
   /******************************************************************
