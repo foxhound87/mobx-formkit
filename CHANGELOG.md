@@ -1,3 +1,10 @@
+## 1.2.0 (2026-11-15)
+
+### Features
+
+- feat: `isArrayContainer(path)` defaults to the path of the instance it is called on, so `field.isArrayContainer()` tells whether the field is an array container
+- feat: `isPlainArrayField()` tells apart a plain field holding an array value from an array container
+
 ## 1.1.4 (2026-11-15)
 
 ### Fixes
