@@ -1,4 +1,10 @@
-## 1.3.0 (unreleased)
+## 1.3.1 (2026-11-21)
+
+### Fixes
+
+- fix: `update()` on a field with nested fields applies the provided array to the nested fields instead of silently dropping it, so an array declared as nested fields can be replaced or emptied (#659)
+
+## 1.3.0 (2026-11-15)
 
 ### Features
 

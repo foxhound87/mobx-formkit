@@ -12,7 +12,7 @@ A concise guide for LLMs working with **MobX Formkit** — the reactive MobX for
 | **NPM**          | [npmjs.com/package/mobx-formkit](https://www.npmjs.com/package/mobx-formkit)         |
 | **GitHub**       | [github.com/foxhound87/mobx-formkit](https://github.com/foxhound87/mobx-formkit)     |
 | **Docs**         | [foxhound87.github.io/mobx-formkit](https://foxhound87.github.io/mobx-formkit/)  |
-| **Version**      | 1.x (current: 1.3.0)                                                                  |
+| **Version**      | 1.x (current: 1.3.1)                                                                  |
 | **Size**         | ~8KB gzip (tree-shakeable)                                                             |
 | **License**      | MIT                                                                                    |
 | **Dependencies** | MobX 5, 6 & 7 (peer: `^5.15.0 \|\| ^6.0.0 \|\| ^7.0.0`), lodash, React (optional)          |
