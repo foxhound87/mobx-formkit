@@ -216,6 +216,38 @@ describe("Array fields — update / reset / sync / add", () => {
     });
   });
 
+  describe("update() on a field with nested fields not declared as an array container", () => {
+    it("applies the array to a field whose declared array became nested fields", () => {
+      const form = new Form({
+        fields: ["rows[]", "rows[].tags"],
+        values: { rows: [{ tags: [5] }] },
+      });
+
+      form.update({ "rows.0.tags": [5, 4] });
+      expect(form.$("rows.0.tags").value).to.deep.equal([5, 4]);
+      expect(form.values()).to.deep.equal({ rows: [{ tags: [5, 4] }] });
+
+      form.update({ "rows.0.tags": [] });
+      expect(form.$("rows.0.tags").value).to.deep.equal([]);
+
+      form.reset();
+      expect(form.$("rows.0.tags").value).to.deep.equal([5]);
+    });
+
+    it("replaces and removes the items of an array created by an earlier update()", () => {
+      const form = new Form({ fields: ["accounts[]"] });
+
+      form.update({ accounts: [{ id: 1, overrides: [{ id: 10, code: "A" }] }] });
+      form.update({ accounts: [{ id: 1, overrides: [{ id: null, code: "B" }] }] });
+      expect(form.values()).to.deep.equal({
+        accounts: [{ id: 1, overrides: [{ id: null, code: "B" }] }],
+      });
+
+      form.update({ accounts: [{ id: 1, overrides: [] }] });
+      expect(form.values()).to.deep.equal({ accounts: [{ id: 1, overrides: [] }] });
+    });
+  });
+
   describe("add() on a simple array", () => {
     it("appends the value when the array is declared with initials", () => {
       const form = new Form({ fields: ["hobbies"], initials: { hobbies: ["Golf"] } });

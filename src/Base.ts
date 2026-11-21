@@ -566,10 +566,16 @@ export default abstract class Base<
 
       if ($field != null && field !== void 0) {
         // an array provided for a field which is not an array container
-        // is the field value itself (not a set of nested fields)
+        // and has no nested fields is the field value itself (not a set of
+        // nested fields); a field with nested fields reads its value from
+        // them, so the array has to be applied to them
         const $rawValue = get(raw, $path);
         const $absPath = [this.path ?? "", $path].join(".").replace(/^\.+/, "");
-        if (Array.isArray($rawValue) && !this.isArrayContainer($absPath)) {
+        if (
+          Array.isArray($rawValue) &&
+          !this.isArrayContainer($absPath) &&
+          !$field.hasNestedFields
+        ) {
           $field.value = parseInput(
             applyInputConverterOnUpdate ? $field.$input : (val) => val,
             {
