@@ -1,3 +1,14 @@
+## Unreleased
+
+### Fixes
+
+- fix: `reset()` on an array container fills the rebuilt nested fields with the values of the reset target instead of leaving them empty, so a container declared with `initials` is restored after a nested field is deleted
+- fix: `reset()` on an array container rebuilds the nested fields from a declared `default` that differs from the `initial`, including one set with `set('default', ...)`
+- fix: `reset()` on an array container drops the nested fields added by `update()`, as it already did for the ones added by `add()`. **Behavior change:** these nested fields were kept with emptied values
+- fix: only a declared `default` is a reset target. A `default` generated for a field created by `update()` no longer counts as differing from the `initial`
+- fix: `onChange()` / `sync()` of an array on an array container follows the values after an empty array, and creates the nested fields of a container that has none. Before, the container stayed `[]` once all its nested fields were removed
+- fix: `onChange()` / `sync()` of an array that adds or removes nested fields makes the container dirty
+
 ## 1.3.1 (2026-11-21)
 
 ### Fixes
