@@ -1,3 +1,14 @@
+## Unreleased
+
+### Features
+
+- feat: `markPristine()` makes the current values the starting point, as if they had been passed to the constructor: each value becomes the `initial` (and the reset target, unless a `default` is declared) and the restore reference, and the touched, blurred and changed state is cleared. The form is pristine afterwards and `reset()` brings the values back. Available on **Form** and on any field
+- feat: `update()` returns the form or field, so `form.update(values).markPristine()` sets new values as the starting point
+
+### Fixes
+
+- fix: `reset()` on an array container fills the rebuilt nested fields with the values of the reset target instead of leaving them empty, so a container declared with `initials` is restored after a nested field is deleted
+
 ## 1.3.1 (2026-11-21)
 
 ### Fixes

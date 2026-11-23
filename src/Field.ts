@@ -21,6 +21,7 @@ import {
   pathToStruct,
   isArrayFromStruct,
   getObservableMapValues,
+  cloneValues,
 } from "./utils";
 
 import { parseInput, parseCheckOutput, defaultValue } from "./parser";
@@ -185,6 +186,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
   $placeholder: string | undefined = undefined;
   $default: any = undefined;
   $initial: any = undefined;
+  $hasDeclaredDefault = false;
   $bindings: any = undefined;
   $extra: any = undefined;
   $related: string[] | undefined = undefined;
@@ -414,6 +416,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
 
   set default(val: T) {
     this.$default = val;
+    this.$hasDeclaredDefault = true;
   }
 
   get nullable(): boolean {
@@ -525,6 +528,26 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       return this.hasIncrementalKeys ? Object.values($nested) : $nested;
     }
     return this.$default !== this.$initial ? this.$default : this.$initial;
+  }
+
+  /**
+    Makes the current value the `initial`, and the reset target unless a
+    `default` is declared
+   */
+  captureInitial(): void {
+    this.$initial = cloneValues(toJS(this.value));
+    // the same reference, so reset() does not see a default that differs
+    if (!this.$hasDeclaredDefault) this.$default = this.$initial;
+  }
+
+  override clearInteraction(): void {
+    super.clearInteraction();
+    this.$blurred = false;
+  }
+
+  override captureInitials(): void {
+    this.captureInitial();
+    super.captureInitials();
   }
 
   get isPristine(): boolean {
@@ -739,6 +762,8 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
         fallbackValueOption,
         isEmptyArray,
       });
+      this.$hasDeclaredDefault =
+        $props.$default !== void 0 || (!update && $data?.default !== void 0);
 
       setupFieldProps(this, $props, $data);
       return;
@@ -781,6 +806,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       fallbackValueOption,
       isEmptyArray,
     });
+    this.$hasDeclaredDefault = $props.$default !== void 0;
 
     setupFieldProps(this, $props, $data);
   }
@@ -948,7 +974,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
           this.createField(
             isPlainObject(value) ? value : { [FieldPropsEnum.value]: value },
             String(index),
-          ),
+          ).captureInitials(),
         );
       } else {
         deep && this.each((field: FieldInterface) => field.reset(deep));
@@ -1060,7 +1086,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     };
   }
 
-  override update(fields: any): void {
+  override update(fields: any): this {
     if (!isPlainObject(fields)) {
       throw new Error("The update() method accepts only plain objects.");
     }
@@ -1085,8 +1111,8 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
           separated: fields,
         },
       );
-      return;
+      return this;
     }
-    super.update(fields);
+    return super.update(fields);
   }
 }

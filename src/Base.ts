@@ -120,6 +120,7 @@ export default abstract class Base<
       move: action,
       commit: action,
       restore: action,
+      markPristine: action,
     });
 
     // Any reorder of the fields (also when `fields.move()` is called
@@ -528,7 +529,7 @@ export default abstract class Base<
     Update Field Values recurisvely
     OR Create Field if 'undefined'
    */
-  update(fields: any): void {
+  update(fields: any): this {
     if (!isPlainObject(fields)) {
       throw new Error("The update() method accepts only plain objects.");
     }
@@ -539,6 +540,7 @@ export default abstract class Base<
       undefined,
       fields,
     );
+    return this;
   }
 
   deepUpdate(
@@ -855,6 +857,9 @@ export default abstract class Base<
         Object.assign((this as any)[`$${prop}`], data);
       } else {
         set(this, `$${prop}`, data);
+        if (prop === FieldPropsEnum.default) {
+          (this as any).$hasDeclaredDefault = true;
+        }
       }
 
       return;
@@ -1179,6 +1184,43 @@ export default abstract class Base<
    */
   committed(): any {
     return this.$committed === void 0 ? void 0 : cloneValues(this.$committed);
+  }
+
+  /**
+    Mark Pristine
+
+    Makes the current values the starting point, as if they had been passed
+    to the constructor: each value becomes the `initial` (and the reset target,
+    unless a `default` is declared) and the restore reference, and the touched,
+    blurred and changed state is cleared. The fields are pristine afterwards
+    and `reset()` brings these values back.
+
+    It does not change any value and it does not validate. Combined with
+    `update()` it sets new values as the starting point:
+    `form.update(values).markPristine()`.
+   */
+  markPristine(): this {
+    this.captureInitials();
+    this.clearInteraction();
+    this.each((field: any) => {
+      field.clearInteraction();
+      field.initCommittedSnapshot();
+    });
+    this.initCommittedSnapshot();
+    return this;
+  }
+
+  /**
+    Makes the current value of every nested field its `initial`, and its
+    reset target unless a `default` is declared
+   */
+  captureInitials(): void {
+    this.each((field: any) => field.captureInitial());
+  }
+
+  clearInteraction(): void {
+    (this as any).$touched = false;
+    (this as any).$changed = 0;
   }
 
   /**
