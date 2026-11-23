@@ -94,6 +94,35 @@ describe("array containers", () => {
       });
     }
 
+    for (const [label, opts, path, steps] of [
+      ["after a value is added and removed", { struct: ["ids[]"], values: { ids: [1] } }, "ids", [[1, 2], [1]]],
+      ["after an empty array and back", { struct: ["ids[]"], values: { ids: [1, 2] } }, "ids", [[], [1, 2]]],
+      [
+        "after a row is added and removed",
+        { struct: ["rows[].day"], values: { rows: [{ day: 1 }] } },
+        "rows",
+        [[{ day: 1 }, { day: 2 }], [{ day: 1 }]],
+      ],
+      [
+        "in a row, after an empty array and back",
+        { struct: ["rows[].ids[]"], values: { rows: [{ ids: [1, 2] }] } },
+        "rows.0.ids",
+        [[], [1, 2]],
+      ],
+    ] as const) {
+      it(`is pristine again when the values return to the starting ones, ${label}`, () => {
+        const form = new Form(opts as any);
+        const [changed, original] = steps as any;
+
+        form.$(path).onChange(changed);
+        expect(form.isDirty).to.equal(true);
+
+        form.$(path).onChange(original);
+        expect(form.$(path).value).to.deep.equal(original);
+        expect(form.isDirty).to.equal(false);
+      });
+    }
+
     it("creates the nested fields of an empty array container", () => {
       const form = new Form({ struct: ["ids[]"] });
 
