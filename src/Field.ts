@@ -21,6 +21,7 @@ import {
   pathToStruct,
   isArrayFromStruct,
   getObservableMapValues,
+  cloneValues,
 } from "./utils";
 
 import { parseInput, parseCheckOutput, defaultValue } from "./parser";
@@ -185,6 +186,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
   $placeholder: string | undefined = undefined;
   $default: any = undefined;
   $initial: any = undefined;
+  $hasDeclaredDefault = false;
   $bindings: any = undefined;
   $extra: any = undefined;
   $related: string[] | undefined = undefined;
@@ -414,6 +416,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
 
   set default(val: T) {
     this.$default = val;
+    this.$hasDeclaredDefault = true;
   }
 
   get nullable(): boolean {
@@ -524,7 +527,30 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       });
       return this.hasIncrementalKeys ? Object.values($nested) : $nested;
     }
-    return this.$default !== this.$initial ? this.$default : this.$initial;
+    return this.useDefaultValue ? this.$default : this.$initial;
+  }
+
+  /**
+    Whether `reset()` goes to the `default` instead of the `initial`: only a
+    declared `default` that differs from the `initial` does
+   */
+  get useDefaultValue(): boolean {
+    return this.$hasDeclaredDefault && !isEqual(toJS(this.$default), toJS(this.$initial));
+  }
+
+  /**
+    Makes the current value the `initial`, and the reset target unless a
+    `default` is declared
+   */
+  captureInitial(): void {
+    this.$initial = cloneValues(toJS(this.value));
+    if (!this.$hasDeclaredDefault) this.$default = this.$initial;
+  }
+
+
+  override captureInitials(): void {
+    this.captureInitial();
+    super.captureInitials();
   }
 
   get isPristine(): boolean {
@@ -583,9 +609,12 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       $value = $get(e);
     }
 
-    // an array set on a field with nested fields is applied to the nested
-    // fields, otherwise the value would be silently dropped
-    if (this.hasNestedFields && Array.isArray($value)) {
+    // an array set on an array container, or on a field with nested fields,
+    // is applied to the nested fields: their values are what the field reads
+    if (
+      (this.hasNestedFields || this.isArrayContainer(this.path ?? "")) &&
+      Array.isArray($value)
+    ) {
       (this.state.form as any).applyArrayValue(this, $value);
       return;
     }
@@ -739,6 +768,8 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
         fallbackValueOption,
         isEmptyArray,
       });
+      this.$hasDeclaredDefault =
+        $props.$default !== void 0 || (!update && $data?.default !== void 0);
 
       setupFieldProps(this, $props, $data);
       return;
@@ -781,6 +812,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
       fallbackValueOption,
       isEmptyArray,
     });
+    this.$hasDeclaredDefault = $props.$default !== void 0;
 
     setupFieldProps(this, $props, $data);
   }
@@ -927,17 +959,18 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     this.$changed = 0;
     this.files = undefined;
 
-    const useDefaultValue = this.$default !== this.$initial;
+    const useDefaultValue = this.useDefaultValue;
     const $target = useDefaultValue ? this.$default : this.$initial;
 
+    // a container declared without values starts from an empty string
+    const isEmptyTarget = isNil($target) || $target === "";
     if (
       this.isArrayContainer(this.path ?? "") &&
-      !useDefaultValue &&
-      Array.isArray($target)
+      (Array.isArray($target) || isEmptyTarget)
     ) {
-      // an array container is rebuilt from its initial (or default) array:
-      // the removed nested fields are restored and the added ones dropped
-      const $values = $target as any[];
+      // an array container is rebuilt from its reset target: the removed
+      // nested fields are restored and the added ones dropped
+      const $values = isEmptyTarget ? [] : ($target as any[]);
       const $fields = getObservableMapValues(this.fields);
       const $match =
         $fields.length === $values.length &&
@@ -948,7 +981,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
           this.createField(
             isPlainObject(value) ? value : { [FieldPropsEnum.value]: value },
             String(index),
-          ),
+          ).captureInitials(),
         );
       } else {
         deep && this.each((field: FieldInterface) => field.reset(deep));

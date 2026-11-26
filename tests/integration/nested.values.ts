@@ -141,20 +141,11 @@ describe("Check Nested $P Values after reset", () => {
   it("$P club.name value should be empty", () =>
     expect($.$P.$("club.name").value).to.be.empty);
 
-  it("$P members[0].firstname value should be empty", () =>
-    expect($.$P.$("members[0].firstname").value).to.be.empty);
+  it("$P members added by update() should be dropped", () =>
+    expect($.$P.$("members").size).to.equal(0));
 
-  it("$P members[1].firstname value should be empty", () =>
-    expect($.$P.$("members[1].firstname").value).to.be.empty);
-
-  it("$P members[0].hobbies[1] value should be empty", () =>
-    expect($.$P.$("members[0].hobbies[1]").value).to.be.empty);
-
-  it("$P members[1].hobbies[0] value should be empty", () =>
-    expect($.$P.$("members[1].hobbies[0]").value).to.be.empty);
-
-  it("$P members[1].hobbies[1] value should be empty", () =>
-    expect($.$P.$("members[1].hobbies[1]").value).to.be.empty);
+  it("$P members value should be empty", () =>
+    expect($.$P.$("members").value).to.be.empty);
 });
 
 describe("Check Nested $R values()", () => {

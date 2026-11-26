@@ -855,6 +855,9 @@ export default abstract class Base<
         Object.assign((this as any)[`$${prop}`], data);
       } else {
         set(this, `$${prop}`, data);
+        if (prop === FieldPropsEnum.default) {
+          (this as any).$hasDeclaredDefault = true;
+        }
       }
 
       return;
@@ -1118,10 +1121,13 @@ export default abstract class Base<
     created, updated and removed to match the given array
   */
   applyArrayValue($field: any, values: any[]): void {
+    let resized = false;
+
     // remove the nested fields which are not in the new values
     getObservableMapValues($field.fields).forEach(($f: any) => {
       if (Number($f.name) >= values.length) {
         $field.fields.delete($f.name);
+        resized = true;
       }
     });
 
@@ -1136,8 +1142,15 @@ export default abstract class Base<
           isPlainObject(value) ? value : { [FieldPropsEnum.value]: value },
           key,
         );
+        resized = true;
       }
     });
+
+    // removed nested fields leave no changed field behind to count them
+    if (resized) {
+      $field.$changed++;
+      this.state.form.$changed++;
+    }
   }
 
   /**
@@ -1179,6 +1192,15 @@ export default abstract class Base<
    */
   committed(): any {
     return this.$committed === void 0 ? void 0 : cloneValues(this.$committed);
+  }
+
+  /**
+    Makes the current value of every nested field its `initial`, and its
+    reset target unless a `default` is declared (used to fill the nested
+    fields rebuilt by `reset()`)
+   */
+  captureInitials(): void {
+    this.each((field: any) => field.captureInitial());
   }
 
   /**
