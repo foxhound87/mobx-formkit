@@ -32,8 +32,9 @@ form.reset();               // reset all fields to defaults
 form.$('username').reset(); // reset a single field
 ```
 
-- If `default` differs from `initial`, uses `default`
+- If a **declared** `default` differs from `initial`, uses `default`
 - Otherwise uses `initial`
+- To make the current values the new reset target, use [`markPristine()`](./mark-pristine)
 - Resets `touched`, `blurred`, `changed`, and `files`
 - If `validateOnReset` is enabled, re-validates the field
 - Recursively resets nested fields by default

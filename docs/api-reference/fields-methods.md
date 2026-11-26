@@ -32,7 +32,7 @@ form.$('members').container();       // → the form itself (root)
 | `set(obj)` | `(obj: object) => void` | void | Set nested field values from an object |
 | `set(prop, val)` | `(prop: string, val: any) => void` | void | Set a specific field property |
 | `set(prop, obj)` | `(prop: string, obj: object) => void` | void | Set a property on nested fields from an object |
-| `update(fields)` | `(fields: object) => void` | void | Update field values, auto-creating new fields as needed |
+| `update(fields)` | `(fields: object) => Field` | Field | Update field values, auto-creating new fields as needed. Returns the field, so it can be chained with `markPristine()` |
 | `add(obj)` | `(obj?: any) => any` | any | Add a new field or nested field entry |
 | `del(key)` | `(key: string) => void` | void | Delete a field or nested field by key or path |
 | `move(fromIndex, toIndex)` | `(from: number, to: number) => void` | void | Move an array field item from one index to another |
@@ -105,6 +105,7 @@ form.$('email').resetValidation(true);
 |--------|-----------|---------|-------------|
 | `clear(deep?)` | `(deep?: boolean) => void` | void | Clear the field to empty value |
 | `reset(deep?)` | `(deep?: boolean) => void` | void | Reset the field to default value |
+| `markPristine()` | `() => Field` | Field | Make the current values the starting point (`initial` and reset target, unless a declared `default`). Covers the nested fields |
 | `submit(hooks?, opts?)` | `(hooks?: object, opts?: object) => Promise` | Promise | Validate and trigger `onSuccess`/`onError` hooks |
 | `focus()` | `() => void` | void | Programmatically focus the field (requires `ref`) |
 | `blur()` | `() => void` | void | Programmatically blur the field (requires `ref`) |

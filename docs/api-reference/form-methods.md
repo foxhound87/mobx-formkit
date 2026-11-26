@@ -7,6 +7,7 @@
 | **commit()** | - | void | Capture the current values as the restore reference. | [help](../actions/commit-restore.md#overview) |
 | **restore()** | - | void or promise | Restore the values captured by the last `commit()`. | [help](../actions/commit-restore.md#overview) |
 | **committed()** | - | object | The values captured by the last `commit()` (read only). | [help](../actions/commit-restore.md#overview) |
+| **markPristine()** | - | form | Make the current values the starting point (`initial` and reset target, unless a declared `default`). | [help](../actions/mark-pristine.md#overview) |
 | **invalidate(msg)** | (string) | void | Mark the field as invalid. Pass an optional error message or a default error will be shown. | [help](../actions/validate.md#invalidate) |
 | **resetValidation(deep)** | (boolean) | void | Reset the form validation status. Pass `true` for deep reset of nested fields. | [help](../actions/validate.md#resetvalidation) |
 | **showErrors(bool)** | (boolean) | void | Show or Hide Field Error Messages. | [help](../actions/validate.md#showerrors) |
@@ -16,7 +17,7 @@
 | Method | Input | Output | Info | Help |
 |---|---|---|---|---|
 | **select(path)** | (string) | object | Field Selector. Can be chained. | [help](../actions/shared.md#field-selector) |
-| **update(obj)** | (object) | void | Update Fields Values. Will create new fields auomatically. | [help](../actions/get-set.md#update) |
+| **update(obj)** | (object) | form | Update Fields Values. Will create new fields automatically. Returns the form, so it can be chained with `markPristine()`. | [help](../actions/get-set.md#update) |
 | **submit(obj)** | (object) | promise | Perform fields validation. After successful validation triggers onSuccess event and onError event in case of validation error. | [help](../actions/validate.md#submit) |
 | **validate()** | - | promise | Check if the form is valid and return a promise. | [help](../actions/form.md#validate-the-form) |
 | **validate(path)** | (string) | promise | Takes a field `path` in input. Check if the field and nested fields are valid and return a promise. | [help](../actions/form.md#validate-the-form) |

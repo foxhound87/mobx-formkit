@@ -132,6 +132,7 @@ export default defineConfig({
           { text: 'Add, Delete & Move', link: '/actions/add-del' },
           { text: 'Clear, Reset & Focus', link: '/actions/clear-reset' },
           { text: 'Commit & Restore', link: '/actions/commit-restore' },
+          { text: 'Mark Pristine', link: '/actions/mark-pristine' },
           { text: 'Validation & Submit', link: '/actions/validate' },
           { text: 'Helpers', link: '/actions/helpers' },
         ],

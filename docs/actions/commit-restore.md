@@ -79,6 +79,14 @@ form.restore();
 form.values(); // { tags: ['a'], extra: 'x' } — the added field is kept
 ```
 
+### Making the current values the starting point
+
+`commit()` confirms the values as the restore point but leaves the starting point (`initial`) unchanged. To move the starting point too — so that `reset()` and `restore()` both go back to the current values — use [`markPristine()`](./mark-pristine):
+
+```javascript
+form.markPristine(); // initial, reset target and restore reference become the current values
+```
+
 ### `commit()`, `restore()` and `reset()` are different
 
 | Method | Meaning |

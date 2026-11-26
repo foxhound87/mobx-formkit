@@ -101,6 +101,13 @@ form.$('address').update({
 });
 ```
 
+`update()` returns the form (or the field), so it can be chained with `markPristine()` when the new values must become the starting point:
+
+```javascript
+form.update(await fetchRecord()).markPristine();
+form.isDirty; // false
+```
+
 Array notation is supported as well:
 
 ```javascript
