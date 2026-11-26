@@ -43,7 +43,9 @@ export interface BaseInterface<F extends Record<string, any> = Record<string, an
   commit(): void;
   restore(): void | Promise<any>;
   committed(): any;
+  markPristine(): this;
   captureInitials(): void;
+  clearInteraction(): void;
 }
 
 export default BaseInterface;

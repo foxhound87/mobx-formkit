@@ -481,6 +481,28 @@ form.committed(); // the captured values (read only)
 - the validation is not triggered by default: enable the `validateOnRestore` option to validate the restored values
 - `reset()` is unchanged, it keeps restoring the `initial`/`default`
 
+### 5.6.1 Mark Pristine
+
+`markPristine()` makes the current values the starting point, as if they had been passed to the constructor. Use it with `update()` when the values arrive after the form is created (e.g. fetched from an API), and alone after a save. Available on **Form** and on any field, where it covers that field and its nested fields. It returns the form or field, and so does `update()`.
+
+```javascript
+const form = new Form({ struct: ["name", "rows[].day"] });
+
+form.update({ name: "Week", rows: [{ day: 1 }] }).markPristine();
+form.isDirty; // false
+form.$("rows").add({ day: 2 });
+form.reset(); // back to { name: "Week", rows: [{ day: 1 }] }
+
+form.markPristine(); // after a save: the current values become the starting point
+form.$("address").update(picked).markPristine(); // a nested field only
+```
+
+- each value becomes the `initial`, and the reset target unless a `default` is declared; a declared `default` stays the reset target
+- the values also become the restore reference of `restore()`
+- the touched, blurred and changed state is cleared
+- it does not change any value and it does not validate: call `validate()` when `isValid` must reflect the new values
+- `update()` alone does not move the `initial`: after `update()` the form is dirty wherever the values differ from the starting point
+
 ### 5.7 State Checks
 
 ```javascript

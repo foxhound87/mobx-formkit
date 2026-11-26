@@ -17,7 +17,7 @@ export interface SharedActionsInterface {
   submit(hooks?: SubmitHooks, opt?: SubmitOptions): Promise<any>;
   check(prop: string, deep?: boolean): boolean;
   deepCheck(type: string, prop: string, fields: any): any;
-  update(fields: any): void;
+  update(fields: any): this;
   deepUpdate(fields: any, path: string, recursion: boolean): void;
   get(prop?: any, strict?: boolean): any;
   deepGet(prop: any, fields: any): any;

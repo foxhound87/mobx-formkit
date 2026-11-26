@@ -544,9 +544,14 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
    */
   captureInitial(): void {
     this.$initial = cloneValues(toJS(this.value));
+    // the same reference, so reset() does not see a default that differs
     if (!this.$hasDeclaredDefault) this.$default = this.$initial;
   }
 
+  override clearInteraction(): void {
+    super.clearInteraction();
+    this.$blurred = false;
+  }
 
   override captureInitials(): void {
     this.captureInitial();
@@ -1093,7 +1098,7 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
     };
   }
 
-  override update(fields: any): void {
+  override update(fields: any): this {
     if (!isPlainObject(fields)) {
       throw new Error("The update() method accepts only plain objects.");
     }
@@ -1118,8 +1123,8 @@ export default class Field<T = any> extends Base<Record<string, any>> implements
           separated: fields,
         },
       );
-      return;
+      return this;
     }
-    super.update(fields);
+    return super.update(fields);
   }
 }
