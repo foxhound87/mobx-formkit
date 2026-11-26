@@ -1,9 +1,11 @@
-## Unreleased
+## 1.4.0 (2026-11-26)
 
 ### Features
 
 - feat: `markPristine()` makes the current values the starting point, as if they had been passed to the constructor: each value becomes the `initial` (and the reset target, unless a `default` is declared) and the restore reference, and the touched, blurred and changed state is cleared. The form is pristine afterwards and `reset()` brings the values back. Available on **Form** and on any field
 - feat: `update()` returns the form or field, so `form.update(values).markPristine()` sets new values as the starting point
+
+## 1.3.2 (2026-11-26)
 
 ### Fixes
 
